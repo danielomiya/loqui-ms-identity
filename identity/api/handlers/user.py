@@ -45,7 +45,8 @@ def catch(func):
 @catch
 def create_user() -> None:
     body = request.get_json()
-    create_user_use_case.execute(body)
+    user = create_user_use_case.execute(body)
+    return asdict(user), HTTPStatus.CREATED
 
 
 @bp.get("/<int:id>")

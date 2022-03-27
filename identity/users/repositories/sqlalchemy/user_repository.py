@@ -4,24 +4,27 @@ from identity.domain.repositories.user_repository import (
 )
 from identity.domain.models.user import User
 from identity.users.repositories.sqlalchemy.base import SQLAlchemyMixin
-from identity.users.repositories.sqlalchemy.tables import users
+from identity.users.repositories.sqlalchemy.tables import User as sqlUser
 
 
 class UserRepository(BaseUserRepository, SQLAlchemyMixin):
     def store(self, entity: User) -> None:
-        stmt = users.insert()
-        print("stmt:", stmt)
-        with self.get_conn() as conn:
-            res = conn.execute(stmt, asdict(entity))
-        entity.id = res.inserted_primary_key[0]
+        user = sqlUser(**asdict(entity))
+        with self.get_session() as session:
+            session.add(user)
+            session.commit()
+
+            # query newly inserted to get its id
+            new_user = (
+                session.query(sqlUser).filter_by(document=entity.document).first()
+            )
+            entity.id = new_user.id
 
     def get_by_id(self, id: int) -> User:
-        stmt = users.select().where(users.c.id == id)
+        session = self.get_session()
+        user = session.query(sqlUser).filter_by(id=id).first()
 
-        with self.get_conn() as conn:
-            row = conn.execute(stmt).fetchone()
-
-        if not row:
+        if not user:
             return None
 
-        return User(**row._asdict())
+        return User(**dict(user))

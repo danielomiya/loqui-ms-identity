@@ -6,10 +6,10 @@ from identity.domain.models.user import User
 from identity.domain.repositories.user_repository import UserRepository
 from identity.domain.services.password_hasher import PasswordHasher
 from identity.domain.usecases.base_use_case import UseCase
+from identity.domain.validation.cnpj_rule import CNPJRule
 from identity.domain.validation.confirmation_rule import ConfirmationRule
 from identity.domain.validation.contains_rule import ContainsRule
 from identity.domain.validation.cpf_rule import CPFRule
-from identity.domain.validation.cnpj_rule import CNPJRule
 from identity.domain.validation.either_rule import EitherRule
 from identity.domain.validation.minimum_age_rule import MinimumAgeRule
 from identity.domain.validation.not_empty_rule import NotEmptyRule
