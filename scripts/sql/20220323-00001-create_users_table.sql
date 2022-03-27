@@ -1,0 +1,20 @@
+CREATE TABLE users (
+    id BIGINT AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    document VARCHAR(14) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    email_verified_at TIMESTAMP,
+    phone VARCHAR(15) NULL,
+    phone_verified_at TIMESTAMP NULL,
+    hashed_password BINARY(60) NOT NULL,
+    birth_date DATE NOT NULL,
+    picture_url VARCHAR(255) NULL,
+    last_login_at TIMESTAMP NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT pk_users PRIMARY KEY (id),
+    CONSTRAINT uq_users_document UNIQUE (document),
+    CONSTRAINT uq_users_email UNIQUE (email),
+    CONSTRAINT uq_users_phone UNIQUE (phone)
+) default character set = utf8mb4,
+engine = InnoDB;
