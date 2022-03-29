@@ -1,8 +1,9 @@
 from dataclasses import asdict
+
+from identity.domain.models.user import User
 from identity.domain.repositories.user_repository import (
     UserRepository as BaseUserRepository,
 )
-from identity.domain.models.user import User
 from identity.users.repositories.sqlalchemy.base import SQLAlchemyMixin
 from identity.users.repositories.sqlalchemy.tables import User as sqlUser
 
@@ -15,9 +16,7 @@ class UserRepository(BaseUserRepository, SQLAlchemyMixin):
             session.commit()
 
             # query newly inserted to get its id
-            new_user = (
-                session.query(sqlUser).filter_by(document=entity.document).first()
-            )
+            new_user = session.query(sqlUser).filter_by(document=entity.document).first()
             entity.id = new_user.id
 
     def get_by_id(self, id: int) -> User:

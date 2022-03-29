@@ -1,6 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from typing import TypeVar, Generic
-
+from typing import Generic, TypeVar
 
 T = TypeVar("T")
 
@@ -17,7 +16,5 @@ class BaseWriteRepository(Generic[T], metaclass=ABCMeta):
         raise NotImplementedError("override me")
 
 
-class BaseRepository(
-    Generic[T], BaseReadRepository[T], BaseWriteRepository[T], metaclass=ABCMeta
-):
+class BaseRepository(Generic[T], BaseReadRepository[T], BaseWriteRepository[T], metaclass=ABCMeta):
     pass
