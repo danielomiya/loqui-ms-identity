@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
-from math import factorial
-from typing import List
+from typing import List, Union
 
 
 @dataclass
@@ -23,10 +22,8 @@ class LoquiException(BaseException):
 
 
 class ValidationError(LoquiException):
-    error: ErrorDescription
+    error: Union[ErrorDescription, List[ErrorDescription]]
 
-    def __init__(
-        self, *args, error: ErrorFeedback | ErrorDescription, **kwargs
-    ) -> None:
+    def __init__(self, *args, error: Union[ErrorDescription, List[ErrorDescription]], **kwargs) -> None:
         self.error = error
         super().__init__(*args, **kwargs)

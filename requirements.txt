@@ -1,6 +1,7 @@
 bcrypt==3.2.0
 cffi==1.15.0
 click==8.0.4
+dacite==1.6.0
 Flask==2.0.3
 itsdangerous==2.1.2
 Jinja2==3.1.1

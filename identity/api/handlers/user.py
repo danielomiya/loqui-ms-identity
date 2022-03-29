@@ -1,14 +1,14 @@
 from dataclasses import asdict
-from functools import wraps
+from datetime import datetime
 from http import HTTPStatus
 
+from dacite import Config, from_dict
 from flask import Blueprint, request
-from identity.domain.errors import (
-    ErrorFeedback,
-    LoquiException,
-    ValidationError,
-)
-from identity.domain.usecases.create_user import CreateUserUseCase
+
+from identity.api.utils import catch
+from identity.domain.usecases.create_user import CreateUserDTO, CreateUserUseCase
+from identity.domain.utils import parse_iso_datetime
+from identity.typing import Response
 from identity.users.repositories.sqlalchemy.user_repository import UserRepository
 from identity.users.services.bcrypt_service import BcryptService
 
@@ -22,30 +22,12 @@ create_user_use_case = CreateUserUseCase(
 )
 
 
-def catch(func):
-    @wraps(func)
-    def wrap(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except ValidationError as ve:
-            feedback = ErrorFeedback(
-                title="Validation errors",
-                detail="One or more validations have failed",
-                status=HTTPStatus.BAD_REQUEST,
-                errors=[ve.error],
-            )
-            return asdict(feedback), feedback.status
-        except Exception:
-            raise
-
-    return wrap
-
-
 @bp.post("/")
 @catch
-def create_user() -> None:
+def create_user() -> Response:
     body = request.get_json()
-    user = create_user_use_case.execute(body)
+    dto = from_dict(CreateUserDTO, body, Config(type_hooks={datetime: parse_iso_datetime}))
+    user = create_user_use_case.execute(dto)
     return asdict(user), HTTPStatus.CREATED
 
 

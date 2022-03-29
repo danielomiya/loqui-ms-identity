@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+
 from identity.domain.utils import parse_iso_datetime
 
 
