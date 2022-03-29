@@ -1,16 +1,12 @@
-from identity.domain.errors import ErrorDescription
-from identity.domain.validation.base import JSONValidationHandler
-from identity.typing import JSON
+from typing import Sized
+
+from identity.domain.validation.validation_rule import ValidationRule
+from identity.typing import T
 
 
-class NotEmptyRule(JSONValidationHandler):
-    def validate(self, json: JSON) -> ErrorDescription:
-        o = json.get(self.field)
+class NotEmptyRule(ValidationRule[T, Sized]):
+    def __init__(self, message: str = "field {0} must be not empty") -> None:
+        super().__init__(message)
 
-        if o and len(o):
-            return None
-
-        return ErrorDescription(
-            field=self.field,
-            message=f"Field {self.field} must be not empty",
-        )
+    def is_valid(self, value: Sized, ctx: T) -> bool:
+        return bool(value is None or len(value))

@@ -1,29 +1,26 @@
 import re
+from typing import Generic
 
-from identity.domain.errors import ErrorDescription
-from identity.domain.validation.base import JSONValidationHandler
-from identity.typing import JSON
+from identity.domain.validation.validation_rule import ValidationRule
+from identity.typing import T
 
 
 def has_only_repeated_digits(value: str) -> bool:
     return all(value[0] == v for v in value)
 
 
-class CNPJRule(JSONValidationHandler):
-    def validate(self, json: JSON) -> ErrorDescription:
-        o = json.get(self.field)
-        error = ErrorDescription(
-            field=self.field,
-            message=f"Field {self.field} is not a valid CNPJ valid",
-        )
+class CNPJRule(Generic[T], ValidationRule[T, str]):
+    def __init__(self, message="field {0} is not a valid CNPJ valid") -> None:
+        self.message = message
 
-        if not o:
-            return None
+    def is_valid(self, value: str) -> bool:
+        if not value:
+            return True
 
-        value = re.sub(r"[^\d]", "", o)
+        value = re.sub(r"[^\d]", "", value)
 
         if len(value) != 14 or has_only_repeated_digits(value):
-            return error
+            return False
 
         sum = 0
         weight = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
@@ -54,6 +51,6 @@ class CNPJRule(JSONValidationHandler):
             second_verifying_digit = 11 - verifying_digit
 
         if value[-2:] != f"{first_verifying_digit}{second_verifying_digit}":
-            return error
+            return False
 
-        return None
+        return True

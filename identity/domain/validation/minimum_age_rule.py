@@ -1,33 +1,41 @@
 from datetime import datetime
 from typing import Callable
 
-from identity.domain.errors import ErrorDescription
-from identity.domain.utils import parse_iso_datetime
-from identity.domain.validation.base import JSONValidationHandler
-from identity.typing import JSON
+from identity.domain.validation.validation_rule import ValidationRule
+from identity.typing import T
 
 
-class MinimumAgeRule(JSONValidationHandler):
+class MinimumAgeRule(ValidationRule[T, datetime]):
     def __init__(
-        self, field: str, min_age: int, now: Callable[[], datetime] = datetime.utcnow
+        self,
+        min_age: int,
+        now: Callable[[], datetime] = datetime.utcnow,
+        message: str = "field {0} not old enough to be {1} year old",
     ) -> None:
         self.min_age = min_age
         self.now = now
-        super().__init__(field)
+        super().__init__(message)
 
-    def validate(self, json: JSON) -> ErrorDescription:
-        o = json.get(self.field)
-        if not o:
-            return None
+    def is_valid(self, value: datetime, ctx: T) -> bool:
+        if value is None:
+            return True
 
-        dttm_point = parse_iso_datetime(o)
-        timespan = self.now() - dttm_point
+        timespan = self.now() - value
         total_years = timespan.days / 365.25
 
-        if total_years >= self.min_age:
-            return None
+        if total_years < self.min_age:
+            return False
 
-        return ErrorDescription(
-            field=self.field,
-            message=f"Field {self.field} not old enough to be {self.min_age} year old",
-        )
+        return True
+
+    def format_error(self, name: str) -> str:
+        """
+        Formats the error message.
+
+        Args:
+            name (str): name of the field.
+
+        Returns:
+            str: error message.
+        """
+        return self.message.format(name, self.min_age)

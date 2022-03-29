@@ -1,20 +1,26 @@
-from identity.domain.errors import ErrorDescription
-from identity.domain.validation.base import JSONValidationHandler
-from identity.typing import JSON
+from typing import Generic
+
+from identity.domain.utils import make_getter
+from identity.domain.validation.validation_rule import ValidationRule
+from identity.typing import F, T
 
 
-class ConfirmationRule(JSONValidationHandler):
-    def __init__(self, field: str, field_to_compare: str) -> None:
-        super().__init__(field)
-        self.field_to_compare = field_to_compare
+class ConfirmationRule(Generic[T, F], ValidationRule[T, F]):
+    def __init__(
+        self,
+        field: str,
+        message: str = "field {0} is not equal to {1}",
+    ) -> None:
+        """
+        ConfirmationRule constructor.
 
-    def validate(self, json: JSON) -> ErrorDescription:
-        o1, o2 = json.get(self.field), json.get(self.field_to_compare)
+        Args:
+            field (str): field to compare (must be available in ctx)
+            message (str, optional): error message format. Defaults to "field {0} is not equal to {1}".
+        """
+        self.field = field
+        super().__init__(message)
 
-        if o1 == o2:
-            return None
-
-        return ErrorDescription(
-            field=self.field,
-            message=f"Field {self.field} is not equal to {self.field_to_compare}",
-        )
+    def is_valid(self, value: F, ctx: T = None) -> bool:
+        get = make_getter(ctx)
+        return value == get(self.field)
