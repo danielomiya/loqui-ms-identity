@@ -1,7 +1,7 @@
 import bcrypt
+
 from identity.domain.services.password_comparer import PasswordComparer
 from identity.domain.services.password_hasher import PasswordHasher
-
 
 ENCODING = "utf8"
 
