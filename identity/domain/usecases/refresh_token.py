@@ -1,9 +1,11 @@
-from typing import TypedDict
+from dataclasses import dataclass
+
 from identity.domain.models.token import Token
 from identity.domain.usecases.base_use_case import UseCase
 
 
-class RefreshTokenDTO(TypedDict):
+@dataclass
+class RefreshTokenDTO:
     client_id: int
     refresh_token: str
     scope: str  # = "*"

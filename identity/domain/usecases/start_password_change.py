@@ -1,9 +1,10 @@
-from typing import TypedDict
+from dataclasses import dataclass
 
 from identity.domain.usecases.base_use_case import UseCase
 
 
-class RequestPasswordChangeDTO(TypedDict):
+@dataclass
+class RequestPasswordChangeDTO:
     email: str
 
 

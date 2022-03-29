@@ -1,10 +1,11 @@
-from typing import TypedDict
+from dataclasses import dataclass
 
 from identity.domain.models.token import Token
 from identity.domain.usecases.base_use_case import UseCase
 
 
-class AccessRequestDTO(TypedDict):
+@dataclass
+class AccessRequestDTO:
     client_id: str
     username: str
     password: str
