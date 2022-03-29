@@ -1,14 +1,12 @@
 from dataclasses import asdict
 from functools import wraps
 from http import HTTPStatus
-from re import T
-from typing import Callable
 
 from identity.domain.errors import ErrorFeedback, ValidationError
 from identity.typing import Response
 
 
-def catch(func: Callable[[], T]) -> Callable[[], T]:
+def catch(func: callable) -> callable:
     @wraps(func)
     def wrap(*args, **kwargs) -> Response:
         try:
