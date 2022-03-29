@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  api:
+    build: .
+    container_name: identity.loqui.dev
+    restart: always
+    env_file: .env
+    ports:
+      - ${FLASK_RUN_PORT}:${FLASK_RUN_PORT}
+    networks:
+      - bubble
+
+  db:
+    image: mariadb:10.7
+    container_name: identity_db.loqui.dev
+    restart: always
+    environment:
+      - MARIADB_USER=${LOQUI_IDENTITY_DB_USERNAME}
+      - MARIADB_PASSWORD=${LOQUI_IDENTITY_DB_PASSWORD}
+      - MARIADB_DATABASE=${LOQUI_IDENTITY_DB_NAME}
+      - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=yes
+      - MARIADB_ROOT_PASSWORD=
+    networks:
+      - bubble
+    volumes:
+      - data:/var/lib/mysql
+
+networks:
+  bubble:
+
+volumes:
+  data:
