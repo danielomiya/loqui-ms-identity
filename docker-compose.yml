@@ -6,10 +6,14 @@ services:
     container_name: identity.loqui.dev
     restart: always
     env_file: .env
+    environment:
+      - LOQUI_IDENTITIY_DB_URL=mysql+pymysql://${LOQUI_IDENTITY_DB_USERNAME}:${LOQUI_IDENTITY_DB_PASSWORD}@${LOQUI_IDENTITY_DB_HOST}/${LOQUI_IDENTITY_DB_NAME}
     ports:
       - ${FLASK_RUN_PORT}:${FLASK_RUN_PORT}
     networks:
       - bubble
+    depends_on:
+      - db
 
   db:
     image: mariadb:10.7
