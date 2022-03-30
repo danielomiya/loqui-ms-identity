@@ -5,7 +5,6 @@ from http import HTTPStatus
 from dacite import Config, from_dict
 from flask import Blueprint, request
 
-from identity.api.utils import catch
 from identity.domain.usecases.create_user import CreateUserDTO, CreateUserUseCase
 from identity.domain.utils import parse_iso_datetime
 from identity.typing import Response
@@ -23,7 +22,6 @@ create_user_use_case = CreateUserUseCase(
 
 
 @bp.post("/")
-@catch
 def create_user() -> Response:
     body = request.get_json()
     dto = from_dict(CreateUserDTO, body, Config(type_hooks={datetime: parse_iso_datetime}))
