@@ -1,29 +1,23 @@
-from dataclasses import dataclass, field
 from typing import List, Union
 
-
-@dataclass
-class ErrorDescription:
-    field: str
-    message: str
+from identity.domain.models.error import ErrorDescription
 
 
-@dataclass
-class ErrorFeedback:
-    title: str
-    detail: str
-    status: int
-    type: str = None
-    errors: List[ErrorDescription] = field(default_factory=list)
-
-
-class LoquiException(BaseException):
-    pass
+class LoquiException(Exception):
+    """
+    Base exception for app exceptions
+    """
 
 
 class ValidationError(LoquiException):
-    error: Union[ErrorDescription, List[ErrorDescription]]
+    errors: List[ErrorDescription]
 
     def __init__(self, *args, error: Union[ErrorDescription, List[ErrorDescription]], **kwargs) -> None:
-        self.error = error
+        """
+        ValidationError constructor
+
+        Args:
+            error (Union[ErrorDescription, List[ErrorDescription]]): errors that caused exception
+        """
+        self.errors = error if isinstance(error, list) else [error]
         super().__init__(*args, **kwargs)

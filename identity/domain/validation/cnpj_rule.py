@@ -11,9 +11,26 @@ def has_only_repeated_digits(value: str) -> bool:
 
 class CNPJRule(Generic[T], ValidationRule[T, str]):
     def __init__(self, message="field {0} is not a valid CNPJ valid") -> None:
+        """
+        CNPJRule constructor
+
+        Args:
+            message (str, optional): error message format
+                Defaults to "field {0} is not a valid CNPJ valid"
+        """
         self.message = message
 
-    def is_valid(self, value: str) -> bool:
+    def is_valid(self, value: str, ctx: T) -> bool:
+        """
+        Checks if given value is a valid CNPJ
+
+        Args:
+            value (str): CNPJ value to test
+            ctx (T): context of field
+
+        Returns:
+            bool: whether value is valid or not
+        """
         if not value:
             return True
 
@@ -40,6 +57,7 @@ class CNPJRule(Generic[T], ValidationRule[T, str]):
         # calc the second check digit of cnpj
         sum = 0
         weight = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
+
         for n in range(13):
             sum += int(value[n]) * weight[n]
 
@@ -50,7 +68,4 @@ class CNPJRule(Generic[T], ValidationRule[T, str]):
         else:
             second_verifying_digit = 11 - verifying_digit
 
-        if value[-2:] != f"{first_verifying_digit}{second_verifying_digit}":
-            return False
-
-        return True
+        return value[-2:] == f"{first_verifying_digit}{second_verifying_digit}"

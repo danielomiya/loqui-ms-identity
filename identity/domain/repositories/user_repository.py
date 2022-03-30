@@ -5,4 +5,6 @@ from identity.domain.repositories.base_repository import BaseRepository
 
 
 class UserRepository(BaseRepository[User], metaclass=ABCMeta):
-    pass
+    """
+    Repository of users
+    """
