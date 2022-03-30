@@ -7,6 +7,10 @@ ENCODING = "utf8"
 
 
 class BcryptService(PasswordComparer, PasswordHasher):
+    """
+    Implements password hashing and comparing with bcrypt algorithm
+    """
+
     def hash(self, passwd: str) -> str:
         return bcrypt.hashpw(passwd.encode(ENCODING), bcrypt.gensalt()).decode(ENCODING)
 
