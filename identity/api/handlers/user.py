@@ -29,11 +29,6 @@ def create_user() -> Response:
     return asdict(user), HTTPStatus.CREATED
 
 
-@bp.get("/<int:id>")
-def get_user(id: int) -> None:
-    pass
-
-
 @bp.get("/me")
 def get_me() -> None:
     pass
