@@ -1,7 +1,7 @@
 from dataclasses import asdict, dataclass
 from datetime import datetime
 
-from identity.domain.errors import ValidationError
+from identity.domain.errors import ValidationException
 from identity.domain.models.user import User
 from identity.domain.repositories.user_repository import UserRepository
 from identity.domain.services.password_hasher import PasswordHasher
@@ -50,7 +50,7 @@ class CreateUserUseCase(UseCase[CreateUserDTO, User]):
 
         errors = validator.validate(request)
         if errors:
-            raise ValidationError(error=errors)
+            raise ValidationException(error=errors)
 
         hashed_password = self.password_hasher.hash(request.password)
 
