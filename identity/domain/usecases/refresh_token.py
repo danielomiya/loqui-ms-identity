@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from identity.domain.models.token import Token
+from identity.domain.usecases.authenticate import TokenDTO
 from identity.domain.usecases.base_use_case import UseCase
 
 
@@ -12,6 +12,6 @@ class RefreshTokenDTO:
     grant_type: str  # = "refresh_token"
 
 
-class RefreshTokenUseCase(UseCase[RefreshTokenDTO, Token]):
-    def execute(self, request: RefreshTokenDTO) -> Token:
+class RefreshTokenUseCase(UseCase[RefreshTokenDTO, TokenDTO]):
+    def execute(self, request: RefreshTokenDTO) -> TokenDTO:
         return super().execute(request)
