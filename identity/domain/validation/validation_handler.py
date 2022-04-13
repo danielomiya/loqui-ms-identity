@@ -52,6 +52,5 @@ class ValidationHandler(Generic[T]):
 
                 if err:
                     acc.append(ErrorDescription(field=field, message=err))
-                    break
 
         return acc
