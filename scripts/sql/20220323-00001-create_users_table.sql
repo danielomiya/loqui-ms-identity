@@ -16,5 +16,5 @@ CREATE TABLE users (
     CONSTRAINT uq_users_document UNIQUE (document),
     CONSTRAINT uq_users_email UNIQUE (email),
     CONSTRAINT uq_users_phone UNIQUE (phone)
-) default character set = utf8mb4,
-engine = InnoDB;
+) DEFAULT CHARACTER SET = utf8mb4,
+ENGINE = InnoDB;
